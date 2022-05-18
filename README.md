@@ -1,4 +1,4 @@
-#Simple scrap OLX for SemiNovos BH
+# Simple scrap OLX for SemiNovos BH
 
 ### To extract categories
 ```python3 src/scrap.py```
