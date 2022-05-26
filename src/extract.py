@@ -1,20 +1,20 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import re
 import json
 import time 
+import csv
 
 DRIVER_PATH = './chrome/chromedriver.exe'
 filename = "./urls.json"
-
-f = open("contatos.txt", "a+")
+f = open('contatos.csv', 'w', encoding='UTF8')
+#f = open("contatos.txt", "a+")
 
 options = Options()
-options.headless = True # False
+#options.headless = False # False
 
 options.add_argument("--window-size=1920,1080")
 options.add_argument("--no-sandbox")
-options.add_argument("--headless")
+options.add_argument("--headless") # True
 options.add_argument("--disable-gpu")
 options.add_argument("--disable-crash-reporter")
 options.add_argument("--disable-extensions")
@@ -29,6 +29,11 @@ driver = webdriver.Chrome(options=options, executable_path=DRIVER_PATH)
 
 with open(filename) as fp:
     urls_anuncios = json.load(fp)
+
+    writer = csv.writer(f)
+    header = ['name', 'phone', 'verify', 'description']
+    
+    writer.writerow(header)
 
 for url_anuncio in urls_anuncios:
 
@@ -49,16 +54,20 @@ for url_anuncio in urls_anuncios:
                 user = ad.get('user')
                 phone = ad.get('phone')
 
-                f = open("contatos.txt", "a+")
-                f.write('Nome: ' + str(user.get('name')) + "\n" + 'Descricao: ' + str(ad.get('body')) + "\n" + "Telefone: " + str(phone.get('phone')) + "\n" + "Verificado: " + str(phone.get('phoneVerified')) + "\n" + "Anuncio: " + str(url_anuncio.get('anuncio')) + "\n" + "\n")
+                #f = open("contatos.txt", "a+")
+                #f.write('Nome: ' + str(user.get('name')) + "\n" + 'Descricao: ' + str(ad.get('body')) + "\n" + "Telefone: " + str(phone.get('phone')) + "\n" + "Verificado: " + str(phone.get('phoneVerified')) + "\n" + "Anuncio: " + str(url_anuncio.get('anuncio')) + "\n" + "\n")
+                row = [user.get('name'), phone.get('phone'), phone.get('phoneVerified'), ad.get('body'), url_anuncio.get('anuncio')]
+                writer.writerow(row)
+
+                time.sleep(20)
             else:
                 print("Não encontrado")
-                f = open("contatos.txt", "a+")
-                f.write('Anuncio vazio: ' + str(url_anuncio.get('anuncio')) + "\n" + "\n")
+                #f = open("contatos.txt", "a+")
+                #f.write('Anuncio vazio: ' + str(url_anuncio.get('anuncio')) + "\n" + "\n")
 
     else:
         print('Anuncio nao encontrado')
-        f = open("contatos.txt", "a+")
-        f.write('Anuncio nao encontrado: ' + str(url_anuncio.get('anuncio')) + "\n" + "\n")
+        #f = open("contatos.txt", "a+")
+        #f.write('Anuncio nao encontrado: ' + str(url_anuncio.get('anuncio')) + "\n" + "\n")
 
-time.sleep(25)
+f.close()
