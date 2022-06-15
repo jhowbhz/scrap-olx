@@ -31,7 +31,7 @@ with open(filename) as fp:
     urls_anuncios = json.load(fp)
 
     writer = csv.writer(f)
-    header = ['name', 'phone', 'verify', 'description']
+    header = ['name', 'phone', 'verify', 'description', 'url']
     
     writer.writerow(header)
 
